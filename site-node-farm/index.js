@@ -5,7 +5,7 @@ const url = require("url");
 const replaceTemplate = require("./modules/replaceTemplate");
 
 // Lê apenas uma vez, pra não ficar fazendo isso toda vez que houver um request.
-//Um código top level só é executado quando começamos o programa.
+// Um código top level só é executado quando começamos o programa.
 // ./arquivo não é a melhor prática para simbolizar arquivos no mesmo diretório
 const tempOverview = fs.readFileSync(
   `${__dirname}/templates/template-overview.html`,
@@ -20,6 +20,7 @@ const tempProduct = fs.readFileSync(
   "utf-8"
 );
 
+// Leitura dos dados json em dev-data
 const data = fs.readFileSync(`${__dirname}/dev-data/data.json`, "utf-8");
 const dataObj = JSON.parse(data);
 
@@ -46,12 +47,6 @@ const server = http.createServer((req, res) => {
     const output = replaceTemplate(tempProduct, product);
     res.end(output);
   } else if (pathname == "/api") {
-    // fs.readFile(`${__dirname}/dev-data/data.json`, "utf-8", (err, data) => {
-    //   const productData = JSON.parse(data); // Transforma o JSON em um objeto javascript array
-    //   console.log(productData);
-    //   res.writeHead(200, { "Content-type": "application/json" });
-    //   res.end(data);
-    // });
     // res.writeHead(200, { "Content-type": "text/html" });
     // res.end(tempOverview);
   } else {
@@ -60,9 +55,8 @@ const server = http.createServer((req, res) => {
       "Content-type": "text/html",
       "my-own-header": "Meu header!!",
     });
-    /* Código de página não encontrada. Pode ser verificado no DevTools em Console ou Rede. 
+    /* Código de página não encontrada. Pode ser verificado no DevTools em Console ou Rede.
     Em rede (Network), clique no nome da página, em vermelho, e verifique os cabeçalhos de resposta */
-
     res.end("Página não encontrada!");
   }
 });
