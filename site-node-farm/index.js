@@ -1,6 +1,10 @@
 const fs = require("fs");
 const http = require("http");
 const url = require("url");
+
+// 3rd party
+const slugify = require("slugify");
+
 // No require pode-se usar a notação ./diretório
 const replaceTemplate = require("./modules/replaceTemplate");
 
@@ -23,6 +27,11 @@ const tempProduct = fs.readFileSync(
 // Leitura dos dados json em dev-data
 const data = fs.readFileSync(`${__dirname}/dev-data/data.json`, "utf-8");
 const dataObj = JSON.parse(data);
+
+// Criação dos slugs
+const slugs = dataObj.map((element) =>
+  slugify(element.productName, { lower: true })
+);
 
 const server = http.createServer((req, res) => {
   // Desestruturação
@@ -47,8 +56,9 @@ const server = http.createServer((req, res) => {
     const output = replaceTemplate(tempProduct, product);
     res.end(output);
   } else if (pathname == "/api") {
-    // res.writeHead(200, { "Content-type": "text/html" });
-    // res.end(tempOverview);
+    // Envio dos dados
+    res.writeHead(200, { "Content-type": "application/json" });
+    res.end(data);
   } else {
     // Header deve ser declarado antes da resposta
     res.writeHead(404, {
